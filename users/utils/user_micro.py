@@ -14,8 +14,8 @@ from fastapi import Depends,status,HTTPException
 from fastapi.security import OAuth2PasswordBearer
 load_dotenv()
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
-REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 7 days
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 2  # 2 days
+REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 2 # 2 days
 JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')   # should be kept secret
 JWT_REFRESH_SECRET_KEY =  os.environ.get('JWT_REFRESH_SECRET_KEY')
 ALGORITHM = os.environ.get('ALGORITHM')
