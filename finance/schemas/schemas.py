@@ -40,7 +40,8 @@ class UserSphereUpdate(BaseModel):
     status:Optional[int]=None
     sequence:Optional[int]=None
 
-class UserSphereFilter(BaseModel):
+
+class UserSphereGet(BaseModel):
     id:int
     sphere_id:int
     status:int
@@ -50,4 +51,19 @@ class UserSphereFilter(BaseModel):
     class Config:
         orm_mode=True
 
-    
+
+class PayerCreate(BaseModel):
+    name:str
+    status:Optional[int]=1
+class PayerUpdate(BaseModel):
+    id:int
+    name:Optional[str]=None
+    status:Optional[int]=None
+
+class PayerGet(BaseModel):
+    id:int
+    name:str
+    status:int
+    class Config:
+        orm_mode=True
+

@@ -32,6 +32,7 @@ class Payers(Base):
     __tablename__='payers'
     id=Column(Integer,primary_key=True,Integer=True)
     name = Column(VARCHAR(200))
+    status=Column(Integer,default=1)
     py_order = relationship('Orders',back_populates='order_py')
 
 
@@ -63,6 +64,7 @@ class History(Base):
     status = Column(Integer)
     comment= Column(String,nullable=True)
     created_at = Column(DateTime(timezone=True),default=func.now())
+
 
 
 class Files(Base):
