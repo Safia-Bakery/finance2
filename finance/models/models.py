@@ -36,6 +36,14 @@ class Payers(Base):
     py_order = relationship('Orders',back_populates='order_py')
 
 
+"""
+----------ORDERS-------
+status ==0 it is new
+status ==1 it is approved
+status ==2 it is rejected
+status ==3 it it inactive
+"""
+
 class Orders(Base):
     __tablename__='orders'
     id=Column(Integer,primary_key=True,index=True)
@@ -53,6 +61,12 @@ class Orders(Base):
     created_at = Column(DateTime(timezone=True),default=func.now())
     status = Column(Integer,default=0)
 
+"""
+-------HISTORY--------
+status ==0 it is new
+status ==1 it is approved
+status ==2 it is rejected
+"""
 
 class History(Base):
     __tablename__='history'

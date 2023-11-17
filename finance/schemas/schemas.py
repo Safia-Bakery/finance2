@@ -1,4 +1,5 @@
 from typing import Optional ,Literal,Dict
+from decimal import Decimal
 from pydantic import BaseModel,Field
 from pydantic import validator
 from users.schemas.user_schema import User
@@ -66,4 +67,67 @@ class PayerGet(BaseModel):
     status:int
     class Config:
         orm_mode=True
+
+class HistoryGet(BaseModel):
+    id:int
+    user_id:int
+    order_id:int
+    status:int
+    comment:Optional[str]=None
+    created_at:datetime
+    class Config:
+        orm_mode=True
+
+class HistoryUpdate(BaseModel):
+    id:int
+    comment:Optional[str]=None
+    status:int
+    @validator('status')
+    def validate_status(cls, status):
+        if status in [1,2]:
+            raise ValueError("status should be 1 or 2")
+        return status
+
+class OrderCreate(BaseModel):
+    #user_id:int
+    title:Optional[str]=None
+    price:Optional[Decimal]=None
+    payment_type:Optional[int]=None
+    supplier:Optional[str]=None
+    sphere_id:int
+    payer_id:int
+    files:Optional[list[str]]=None
+
+
+
+class OrderUpdate(BaseModel):
+    id:int
+    title:Optional[str]=None
+    price:Optional[Decimal]=None
+    payment_type:Optional[int]=None
+    supplier:Optional[str]=None
+    sphere_id:Optional[int]=None
+    payer_id:Optional[int]=None
+    files:Optional[list[str]]=None
+    status:Optional[int]=None
+
+class OrderGet(BaseModel):
+    id:int
+    title:Optional[str]=None
+    price:Optional[Decimal]=None
+    payment_type:Optional[int]=None
+    supplier:Optional[str]=None
+    sphere_id:Optional[int]=None
+    payer_id:Optional[int]=None
+    files:Optional[list[str]]=None
+    status:Optional[int]=None
+    order_sp:Optional[UserSphereGet]=None
+    order_py:Optional[PayerGet]=None
+    created_at:datetime
+    order_hi:Optional[HistoryGet]=None
+    class Config:
+        orm_mode=True
+
+
+
 

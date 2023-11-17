@@ -42,7 +42,11 @@ class Roles(Base):
 
 
 
-
+"""
+if status ==0 user is inactivate
+if status ==1 user is activate 
+if status ==2 user is superuser
+"""
 
 class Users(Base):
     __tablename__ = "users"
@@ -52,7 +56,7 @@ class Users(Base):
     phone_number = Column(String,nullable=True)
     full_name = Column(String,nullable=True)
     created_at = Column(DateTime(timezone=True),default=func.now())
-    status = Column(Integer,default=0)
+    status = Column(Integer,default=1)
     #user_vs_order = relationship('Order',back_populates='order_vs_user')
     user_sp = relationship('SphereUsers',back_populates='sp_user')
     role_id = Column(Integer,ForeignKey("roles.id"),nullable=True)
