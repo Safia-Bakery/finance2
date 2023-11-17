@@ -30,7 +30,7 @@ class SphereUsers(Base):
 
 class Payers(Base):
     __tablename__='payers'
-    id=Column(Integer,primary_key=True,Integer=True)
+    id=Column(Integer,primary_key=True,index=True)
     name = Column(VARCHAR(200))
     status=Column(Integer,default=1)
     py_order = relationship('Orders',back_populates='order_py')

@@ -19,6 +19,11 @@ from finance.crud import crud
 
 fin_router = APIRouter()
 
+class NoPermissionError(Exception):
+    def __init__(self, message="You have no permission to perform this action"):
+        self.message = message
+        super().__init__(self.message)
+
 
 
 @fin_router.post('/v1/spheres',response_model=schemas.SpheresGet)
@@ -94,6 +99,8 @@ async def order_update(form_data:schemas.OrderUpdate,db:Session=Depends(get_db),
 @fin_router.get('/v1/orders',response_model=Page[schemas.OrderGet])
 async def order_filter(id:Optional[int]=None,title:Optional[str]=None,price:Optional[Decimal]=None,payer_id:Optional[int]=None,payment_type:Optional[int]=None,supplier:Optional[str]=None,sphere_id:Optional[int]=None,user_id:Optional[int]=None,status:Optional[int]=None,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
     orders = crud.order_filter(db=db,id=id,title=title,price=price,payment_type=payment_type,supplier=supplier,sphere_id=sphere_id,payer_id=payer_id,user_id=user_id,status=status,user=request_user)
+    print('hell')
+    print(orders)
     return paginate(orders)
 
 @fin_router.get('/v1/history',response_model=list[schemas.HistoryGet])
@@ -102,9 +109,17 @@ async def history_filter(order_id:int,db:Session=Depends(get_db),request_user: U
 
 @fin_router.put('/v1/history',response_model=schemas.HistoryGet)
 async def history_update(form_data:schemas.HistoryUpdate,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
+    is_owner = crud.order_owner_check(db=db,id=form_data.id)
+    if is_owner.status!=0 or request_user.id!=is_owner.user_id:
+        raise NoPermissionError()
     history = crud.history_update(db=db,form_data=form_data)
     if history:
-        users = crud.get_sphere_user(db=db,order_id=history.order_id,sphere_id=history.hi_order.sphere_id)
-        if users:
-            crud.history_create(db=db,user_id=users.user_id,order_id=history.order_id)
+        if history.status==1:
+            users = crud.get_sphere_user(db=db,order_id=history.order_id,sphere_id=history.hi_order.sphere_id)
+            if users:
+                crud.history_create(db=db,user_id=users.user_id,order_id=history.order_id)
+            else:
+                crud.order_status_update(db=db,order_id=history.order_id,status=1)
+        else:
+            crud.order_status_update(db=db,order_id=history.order_id,status=2)
     return history

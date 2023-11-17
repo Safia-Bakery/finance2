@@ -38,6 +38,7 @@ class User(BaseModel):
     role_id:Optional[int]=None
     phone_number:Optional[str]=None
     user_role :Optional[RolesGet]=None
+    tg_id:Optional[int]=None
     class Config:
         orm_mode=True
 
@@ -59,6 +60,7 @@ class UserMe(BaseModel):
     role_id:Optional[int]=None
     phone_number:Optional[str]=None
     user_role :Optional[RolesGet]=None
+    tg_id:Optional[int]=None
     
     class Config:
         orm_mode=True
@@ -77,6 +79,7 @@ class UserInsertSch(BaseModel):
     role_id:Optional[int]=None
     full_name:Optional[str]=None
     status:Optional[int]=None
+    tg_id:Optional[int]=None
     @validator('password')
     def validate_password_length(cls, password):
         if len(password) < 6:
@@ -92,6 +95,7 @@ class UserUpdate(BaseModel):
     role_id:Optional[int]=None
     phone_number:Optional[int]=None
     password:Optional[str]=None
+    tg_id:Optional[int]=None
     class Config:
         orm_mode=True
 

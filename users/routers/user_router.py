@@ -18,7 +18,7 @@ async def create_user(form_data:UserInsertSch,db:Session=Depends(get_db)):
         if user:
             return user
         password  = hash_password(password=form_data.password)
-        query  = UserService(db).create_user(form_data.username,password=password,phone_number=phone_number,full_name=form_data.full_name,status=form_data.status,role_id=form_data.role_id)
+        query  = UserService(db).create_user(form_data.username,password=password,phone_number=phone_number,full_name=form_data.full_name,status=form_data.status,role_id=form_data.role_id,tg_id=form_data.tg_id)
         return query
     except:
         raise HTTPException(
@@ -75,11 +75,11 @@ async def get_user(db:Session=Depends(get_db),request_user:User=Depends(get_curr
         user = {'user':request_user}
         return user
 
-@user_router.get('/user/get/create',tags=['users'],response_model=User)
-async def get_or_create(phone_number:str,db:Session=Depends(get_db)):
-    phone_number = phone_number.replace('+','')
-    query =UserService(db).get_or_create(phone_number=phone_number)
-    return query
+#@user_router.get('/user/get/create',tags=['users'],response_model=User)
+#async def get_or_create(phone_number:str,db:Session=Depends(get_db)):
+#    phone_number = phone_number.replace('+','')
+#    query =UserService(db).get_or_create(phone_number=phone_number)
+#    return query
 
 @user_router.put('/users',tags=['Users'],response_model=User)
 async def update_user(form_data:UserUpdate,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):

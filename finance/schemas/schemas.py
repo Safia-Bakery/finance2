@@ -14,12 +14,7 @@ class SphereCreate(BaseModel):
     class Config:
         orm_mode=True
 
-class SpheresGet(BaseModel):
-    name:str
-    status:int
-    id:int
-    class Config:
-        orm_mode=True
+
 
 class SpheresUpdate(BaseModel):
     name:Optional[str]=None
@@ -48,10 +43,17 @@ class UserSphereGet(BaseModel):
     status:int
     sequence:int
     user_id:int
-    user:User
+    sp_user:User
     class Config:
         orm_mode=True
 
+class SpheresGet(BaseModel):
+    name:str
+    status:int
+    id:int
+    sphereuser:list[UserSphereGet]=None
+    class Config:
+        orm_mode=True
 
 class PayerCreate(BaseModel):
     name:str
@@ -121,10 +123,10 @@ class OrderGet(BaseModel):
     payer_id:Optional[int]=None
     files:Optional[list[str]]=None
     status:Optional[int]=None
-    order_sp:Optional[UserSphereGet]=None
+    order_sp:Optional[SpheresGet]=None
     order_py:Optional[PayerGet]=None
     created_at:datetime
-    order_hi:Optional[HistoryGet]=None
+    order_hi:Optional[list[HistoryGet]]=None
     class Config:
         orm_mode=True
 

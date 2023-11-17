@@ -165,7 +165,7 @@ def get_sphere_user(db:Session,sphere_id,order_id):
     return query.order_by(models.SphereUsers.sequence.asc()).first()
 
 def history_create(db:Session,user_id,order_id):
-    query = models.History(user_id=user_id,order_id=order_id)
+    query = models.History(user_id=user_id,order_id=order_id,status=0)
     db.add(query)
     db.commit()
     db.refresh(query)
@@ -183,4 +183,14 @@ def history_update(db:Session,form_data:schemas.HistoryUpdate):
             query.comment =form_data.comment
         db.commit()
         db.refresh(query)
+    return query
+
+def order_status_update(db:Session,order_id,status):
+    query = db.query(models.Orders).filter(models.Orders.id==order_id).first()
+    query.status=status
+    db.commit()
+    return True
+
+def order_owner_check(db:Session,id):
+    query = db.query(models.History).filter(models.History.id==id).first()
     return query

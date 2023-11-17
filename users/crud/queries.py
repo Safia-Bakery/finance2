@@ -16,8 +16,8 @@ class UserService:
         
         
         return result.all()
-    def create_user(self,username,password,phone_number,full_name,status,role_id):
-        query = Users(username=username,password=password,phone_number=phone_number,full_name=full_name,status=status,role_id=role_id)
+    def create_user(self,username,password,phone_number,full_name,status,role_id,tg_id):
+        query = Users(username=username,password=password,phone_number=phone_number,full_name=full_name,status=status,role_id=role_id,tg_id=tg_id)
         self.db.add(query)
         self.db.commit()
         self.db.refresh(query)
