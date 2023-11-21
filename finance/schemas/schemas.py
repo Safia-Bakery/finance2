@@ -99,6 +99,9 @@ class OrderCreate(BaseModel):
     sphere_id:int
     payer_id:int
     files:Optional[list[str]]=None
+    purchaser:Optional[str]=None
+    is_urgent:Optional[int]=None
+    comment:Optional[str]=None
 
 
 
@@ -112,6 +115,9 @@ class OrderUpdate(BaseModel):
     payer_id:Optional[int]=None
     files:Optional[list[str]]=None
     status:Optional[int]=None
+    purchaser:Optional[str]=None
+    is_urgent:Optional[int]=None
+    comment:Optional[str]=None
 
 class OrderGet(BaseModel):
     id:int
@@ -127,6 +133,9 @@ class OrderGet(BaseModel):
     order_py:Optional[PayerGet]=None
     created_at:datetime
     order_hi:Optional[list[HistoryGet]]=None
+    purchaser:Optional[str]=None
+    is_urgent:Optional[int]=None
+    comment:Optional[str]=None
     class Config:
         orm_mode=True
 

@@ -7,6 +7,7 @@ from uuid import UUID
 from sqlalchemy import cast, Date,and_
 from finance.schemas import schemas
 
+
 def create_sphere(db:Session,form_data:schemas.SphereCreate):
     query = models.Spheres(name=form_data.name,status=form_data.status)
     db.add(query)
@@ -103,7 +104,7 @@ def filter_payers(db:Session,id,name,status):
 
 
 def order_create(db:Session,form_data:schemas.OrderCreate,user_id):
-    query = models.Orders(user_id=user_id,title=form_data.title,price=form_data.price,payment_type=form_data.payment_type,supplier=form_data.supplier,sphere_id=form_data.sphere_id,payer_id=form_data.payer_id,files=form_data.files)
+    query = models.Orders(user_id=user_id,title=form_data.title,price=form_data.price,payment_type=form_data.payment_type,supplier=form_data.supplier,sphere_id=form_data.sphere_id,payer_id=form_data.payer_id,files=form_data.files,purchaser=form_data.purchaser,comment = form_data.comment,is_urgent=form_data.is_urgent)
     db.add(query)
     db.commit()
     db.refresh(query)
@@ -128,12 +129,18 @@ def order_update(db:Session,form_data:schemas.OrderUpdate):
             query.files = form_data.files
         if form_data.status is not None:
             query.status=form_data.status
+        if form_data.purchaser is not None:
+            query.purchaser = form_data.purchaser
+        if form_data.is_urgent is not None:
+            query.is_urgent = form_data.is_urgent
+        if form_data.comment is not None:
+            query.comment = form_data.comment
         db.commit()
         db.refresh(query)
     return query
 
 
-def order_filter(db:Session,id,title,price,payment_type,supplier,sphere_id,payer_id,user_id,status,user):
+def order_filter(db:Session,purchaser,id,title,price,payment_type,supplier,sphere_id,payer_id,user_id,status,user,is_urgent):
     query = db.query(models.Orders).join(models.History)
     if user.status!=2:
         query = query.filter(models.History.user_id==user.id)
@@ -155,6 +162,10 @@ def order_filter(db:Session,id,title,price,payment_type,supplier,sphere_id,payer
         query = query.filter(models.Orders.user_id==user_id)
     if status is not None:
         query = query.filter(models.Orders.status==status)
+    if purchaser is not None:
+        query = query.filter(models.Orders.purchaser.ilike(f"%{purchaser}%"))
+    if is_urgent is not None:
+        query = query.filter(models.Orders.is_urgent == is_urgent)
     return query.all()
     
 

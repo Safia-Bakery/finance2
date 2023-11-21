@@ -14,8 +14,17 @@ import shutil
 from fastapi_pagination import paginate,Page,add_pagination
 import re
 from typing import Annotated
+from dotenv import load_dotenv
+import os
 from finance.schemas import schemas
 from finance.crud import crud
+payment_type = ['by card','cash']
+is_urgent  = ['NO','YES']
+
+
+load_dotenv()
+BOTTOKEN = os.environ.get('BOT_TOKEN')
+
 
 fin_router = APIRouter()
 
@@ -89,7 +98,11 @@ async def order_create(form_data:schemas.OrderCreate,db:Session=Depends(get_db),
     order = crud.order_create(db=db,form_data=form_data,user_id=request_user.id)
     users = crud.get_sphere_user(db=db,order_id=order.id,sphere_id=order.sphere_id)
     if users:
+
         crud.history_create(db=db,user_id=users.user_id,order_id=order.id)
+        
+        message = f"Заявка #{order.id}s\n🔘Тип: {order.order_sp.name}\n🙍‍♂Заказчик: {order.purchaser}\n📦Товар: {order.title}\n👨‍💼Поставщик: {order.supplier}\n💰Стоимость: {order.price} UZS\n💲Тип оплаты: {payment_type[order.payment_type]}\n💳Плательщик: {order.order_py.name}\nℹ️Описание: {order.comment}\nСрочно: {is_urgent[order.is_urgent]}"
+        micro.sendtotelegram(bot_token=BOTTOKEN,chat_id=users.sp_user.tg_id,message_text=message)
     return order
 
 @fin_router.put('/v1/orders',response_model=schemas.OrderGet)
@@ -97,10 +110,8 @@ async def order_update(form_data:schemas.OrderUpdate,db:Session=Depends(get_db),
     return crud.order_update(db=db,form_data=form_data)
 
 @fin_router.get('/v1/orders',response_model=Page[schemas.OrderGet])
-async def order_filter(id:Optional[int]=None,title:Optional[str]=None,price:Optional[Decimal]=None,payer_id:Optional[int]=None,payment_type:Optional[int]=None,supplier:Optional[str]=None,sphere_id:Optional[int]=None,user_id:Optional[int]=None,status:Optional[int]=None,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
-    orders = crud.order_filter(db=db,id=id,title=title,price=price,payment_type=payment_type,supplier=supplier,sphere_id=sphere_id,payer_id=payer_id,user_id=user_id,status=status,user=request_user)
-    print('hell')
-    print(orders)
+async def order_filter(purchaser:Optional[str]=None,id:Optional[int]=None,title:Optional[str]=None,price:Optional[Decimal]=None,payer_id:Optional[int]=None,payment_type:Optional[int]=None,supplier:Optional[str]=None,sphere_id:Optional[int]=None,user_id:Optional[int]=None,status:Optional[int]=None,is_urgent:Optional[int]=None,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
+    orders = crud.order_filter(db=db,id=id,title=title,price=price,payment_type=payment_type,supplier=supplier,sphere_id=sphere_id,payer_id=payer_id,user_id=user_id,status=status,user=request_user,purchaser=purchaser,is_urgent=is_urgent)
     return paginate(orders)
 
 @fin_router.get('/v1/history',response_model=list[schemas.HistoryGet])

@@ -48,6 +48,7 @@ class Orders(Base):
     __tablename__='orders'
     id=Column(Integer,primary_key=True,index=True)
     user_id = Column(Integer,ForeignKey('users.id'))
+    purchaser = Column(String,nullable=True)
     title = Column(String,nullable=True)
     price = Column(DECIMAL(20,5),nullable=True)
     payment_type = Column(Integer,default=0)
@@ -60,6 +61,8 @@ class Orders(Base):
     order_hi = relationship('History',back_populates='hi_order')
     created_at = Column(DateTime(timezone=True),default=func.now())
     status = Column(Integer,default=0)
+    comment = Column(String,nullable=True)
+    is_urgent =  Column(Integer,nullable=True)
 
 """
 -------HISTORY--------

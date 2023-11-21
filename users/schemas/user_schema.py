@@ -85,7 +85,11 @@ class UserInsertSch(BaseModel):
         if len(password) < 6:
             raise ValueError("Password must be at least 6 characters long")
         return password
-
+    @validator('status')
+    def validate_password_length(cls, status):
+        if status not in [0,1]:
+            raise ValueError("invalid status it should be 1 or 0")
+        return status
 
 class UserUpdate(BaseModel):
     id:int
@@ -104,6 +108,11 @@ class UserUpdate(BaseModel):
         if len(password) < 6:
             raise ValueError("Password must be at least 6 characters long")
         return password
+    @validator('status')
+    def validate_password_length(cls, status):
+        if status not in [0,1]:
+            raise ValueError("invalid status it should be 1 or 0")
+        return status
     
 
 class RolesCreate(BaseModel):
