@@ -58,8 +58,8 @@ async def udpate_sphere_users(form_data:schemas.UserSphereUpdate,db:Session=Depe
     return crud.update_sphere_user(db=db,form_data=form_data)
 
 @fin_router.get('/v1/spheres/users',response_model=list[schemas.UserSphereGet])
-async def filter_sphere_users(id:Optional[int]=None,sphere_id:Optional[int]=None,user_id:Optional[int]=None,sequence:Optional[int]=None,status:Optional[int]=None,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
-    return crud.filter_sphere_user(db=db,id=id,user_id=user_id,sphere_id=sphere_id,sequence=sequence,status=status)
+async def filter_sphere_users(name:Optional[str]=None,id:Optional[int]=None,sphere_id:Optional[int]=None,user_id:Optional[int]=None,sequence:Optional[int]=None,status:Optional[int]=None,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
+    return crud.filter_sphere_user(db=db,id=id,user_id=user_id,sphere_id=sphere_id,sequence=sequence,status=status,name=name)
 
 
 @fin_router.post('/v1/payers',response_model=schemas.PayerGet)
@@ -102,7 +102,10 @@ async def order_create(form_data:schemas.OrderCreate,db:Session=Depends(get_db),
         crud.history_create(db=db,user_id=users.user_id,order_id=order.id)
         
         message = f"Заявка #{order.id}s\n🔘Тип: {order.order_sp.name}\n🙍‍♂Заказчик: {order.purchaser}\n📦Товар: {order.title}\n👨‍💼Поставщик: {order.supplier}\n💰Стоимость: {order.price} UZS\n💲Тип оплаты: {payment_type[order.payment_type]}\n💳Плательщик: {order.order_py.name}\nℹ️Описание: {order.comment}\nСрочно: {is_urgent[order.is_urgent]}"
-        micro.sendtotelegram(bot_token=BOTTOKEN,chat_id=users.sp_user.tg_id,message_text=message)
+        try:
+            micro.sendtotelegram(bot_token=BOTTOKEN,chat_id=users.sp_user.tg_id,message_text=message)
+        except:
+            pass
     return order
 
 @fin_router.put('/v1/orders',response_model=schemas.OrderGet)
@@ -129,6 +132,12 @@ async def history_update(form_data:schemas.HistoryUpdate,db:Session=Depends(get_
             users = crud.get_sphere_user(db=db,order_id=history.order_id,sphere_id=history.hi_order.sphere_id)
             if users:
                 crud.history_create(db=db,user_id=users.user_id,order_id=history.order_id)
+                order = crud.order_id_get(db=db,id=history.order_id)
+                message = f"Заявка #{order.id}s\n🔘Тип: {order.order_sp.name}\n🙍‍♂Заказчик: {order.purchaser}\n📦Товар: {order.title}\n👨‍💼Поставщик: {order.supplier}\n💰Стоимость: {order.price} UZS\n💲Тип оплаты: {payment_type[order.payment_type]}\n💳Плательщик: {order.order_py.name}\nℹ️Описание: {order.comment}\nСрочно: {is_urgent[order.is_urgent]}"
+                try:
+                    micro.sendtotelegram(bot_token=BOTTOKEN,chat_id=users.sp_user.tg_id,message_text=message)
+                except:
+                    pass
             else:
                 crud.order_status_update(db=db,order_id=history.order_id,status=1)
         else:

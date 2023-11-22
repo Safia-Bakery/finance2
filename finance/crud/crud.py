@@ -38,7 +38,7 @@ def update_sphere(db:Session,form_data:schemas.SpheresUpdate):
 
 
 def create_sphere_user(db:Session,form_data:schemas.UserSphereCreate):
-    query = models.SphereUsers(user_id=form_data.user_id,sphere_id=form_data.sphere_id,status=form_data.status,sequence=form_data.sequence) 
+    query = models.SphereUsers(user_id=form_data.user_id,sphere_id=form_data.sphere_id,status=form_data.status,sequence=form_data.sequence,name=form_data.name) 
     db.add(query)
     db.commit()
     db.refresh(query)
@@ -53,11 +53,13 @@ def update_sphere_user(db:Session,form_data:schemas.UserSphereUpdate):
             query.status = form_data.status
         if form_data.sequence is not None:
             query.sequence = form_data.sequence
+        if form_data.name is not None:
+            query.name=form_data.name
         db.commit()
         db.refresh(query)
     return query
 
-def filter_sphere_user(db:Session,id,user_id,sphere_id,status,sequence):
+def filter_sphere_user(db:Session,id,user_id,sphere_id,status,sequence,name):
     query = db.query(models.SphereUsers)
     if id is not None:
         query = query.filter(models.SphereUsers.id==id)
@@ -69,6 +71,8 @@ def filter_sphere_user(db:Session,id,user_id,sphere_id,status,sequence):
         query = query.filter(models.SphereUsers.status==status)
     if sequence is not None:
         query = query.filter(models.SphereUsers.sequence==sequence)
+    if name is not None:
+        query = query.filter(models.SphereUsers.name.ilike(f"%{name}%"))
     return query.all()
 
 
@@ -204,4 +208,8 @@ def order_status_update(db:Session,order_id,status):
 
 def order_owner_check(db:Session,id):
     query = db.query(models.History).filter(models.History.id==id).first()
+    return query
+
+def order_id_get(db:Session,id):
+    query = db.query(models.Orders).filter(models.Orders.id==id).first()
     return query
