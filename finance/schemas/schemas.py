@@ -89,7 +89,7 @@ class HistoryUpdate(BaseModel):
     status:int
     @validator('status')
     def validate_status(cls, status):
-        if status in [1,2]:
+        if status not in [1,2]:
             raise ValueError("status should be 1 or 2")
         return status
 
