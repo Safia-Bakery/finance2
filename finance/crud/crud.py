@@ -206,8 +206,8 @@ def order_status_update(db:Session,order_id,status):
     db.commit()
     return True
 
-def order_owner_check(db:Session,id):
-    query = db.query(models.History).filter(models.History.id==id).first()
+def order_owner_check(db:Session,id,user_id):
+    query = db.query(models.History).filter(and_(models.History.order_id==id,models.History.user_id==user_id)).first()
     return query
 
 def order_id_get(db:Session,id):

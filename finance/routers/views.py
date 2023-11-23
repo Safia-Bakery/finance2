@@ -123,8 +123,11 @@ async def history_filter(order_id:int,db:Session=Depends(get_db),request_user: U
 
 @fin_router.put('/v1/history',response_model=schemas.HistoryGet)
 async def history_update(form_data:schemas.HistoryUpdate,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
-    is_owner = crud.order_owner_check(db=db,id=form_data.id)
+    is_owner = crud.order_owner_check(db=db,id=form_data.id,user_id=request_user.id)
     if is_owner.status!=0 or request_user.id!=is_owner.user_id:
+        print(is_owner.status)
+        print(request_user.id)
+        print(is_owner.user_id)
         raise NoPermissionError()
     history = crud.history_update(db=db,form_data=form_data)
     if history:
