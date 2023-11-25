@@ -1,6 +1,6 @@
 from users.models.models import *
 from users.schemas.user_schema import UserUpdate
-from users.utils.user_micro import *
+from users.utils.user_micro import hash_password
 
 
 class UserService:
