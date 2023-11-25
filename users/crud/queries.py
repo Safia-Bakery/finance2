@@ -1,6 +1,6 @@
 from users.models.models import *
 from users.schemas.user_schema import UserUpdate
-from utils import user_micro
+from users.utils import user_micro
 
 
 
