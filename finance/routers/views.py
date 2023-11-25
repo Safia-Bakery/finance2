@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 import os
 from finance.schemas import schemas
 from finance.crud import crud
-payment_type = ['by card','cash']
+payment_type = ['by card','cash','перечисление']
 is_urgent  = ['NO','YES']
 
 
