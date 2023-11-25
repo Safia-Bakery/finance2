@@ -76,6 +76,7 @@ class PayerGet(BaseModel):
 class HistoryGet(BaseModel):
     id:int
     user_id:int
+    hi_user:User
     order_id:int
     status:int
     comment:Optional[str]=None
