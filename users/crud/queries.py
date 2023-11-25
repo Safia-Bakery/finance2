@@ -1,6 +1,7 @@
 from users.models.models import *
 from users.schemas.user_schema import UserUpdate
-from users.routers.user_router import hash_password
+from utils import user_micro
+
 
 
 class UserService:
@@ -44,7 +45,7 @@ class UserService:
             if form_data.username is not None:
                 query.username = form_data.username
             if form_data.password is not None:
-                query.password = hash_password(password=form_data.password)
+                query.password = user_micro.hash_password(password=form_data.password)
             if form_data.phone_number is not None:
                 query.phone_number = form_data.phone_number
             if form_data.full_name is not None:
