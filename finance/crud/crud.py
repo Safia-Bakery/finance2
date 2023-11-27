@@ -163,7 +163,7 @@ def order_filter(db:Session,purchaser,id,title,price,payment_type,supplier,spher
     if payer_id is not None:
         query =query.filter(models.Orders.payer_id==payer_id)
     if user_id is not None:
-        query = query.filter(models.Orders.user_id==user_id)
+        query = query.filter(models.History.user_id==user_id)
     if status is not None:
         query = query.filter(models.Orders.status==status)
     if purchaser is not None:
