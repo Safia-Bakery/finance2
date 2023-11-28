@@ -38,7 +38,7 @@ def update_sphere(db:Session,form_data:schemas.SpheresUpdate):
 
 
 def create_sphere_user(db:Session,form_data:schemas.UserSphereCreate):
-    query = models.SphereUsers(user_id=form_data.user_id,sphere_id=form_data.sphere_id,status=form_data.status,sequence=form_data.sequence,name=form_data.name,show=form_data.show) 
+    query = models.SphereUsers(user_id=form_data.user_id,sphere_id=form_data.sphere_id,status=form_data.status,sequence=form_data.sequence,name=form_data.name) 
     db.add(query)
     db.commit()
     db.refresh(query)
@@ -55,8 +55,6 @@ def update_sphere_user(db:Session,form_data:schemas.UserSphereUpdate):
             query.sequence = form_data.sequence
         if form_data.name is not None:
             query.name=form_data.name
-        if form_data.show is not None:
-            query.show=form_data.show
         db.commit()
         db.refresh(query)
     return query

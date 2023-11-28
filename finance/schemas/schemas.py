@@ -30,7 +30,6 @@ class UserSphereCreate(BaseModel):
     status:Optional[int]=1
     sequence:int
     name:Optional[str]=None
-    show:Optional[int]=None
 
 class UserSphereUpdate(BaseModel):
     id:int
@@ -38,7 +37,6 @@ class UserSphereUpdate(BaseModel):
     status:Optional[int]=None
     sequence:Optional[int]=None
     name:Optional[str]=None
-    show:Optional[int]=None
 
 
 class UserSphereGet(BaseModel):
@@ -49,7 +47,6 @@ class UserSphereGet(BaseModel):
     user_id:int
     sp_user:User
     name:Optional[str]=None
-    show:int
     class Config:
         orm_mode=True
 
