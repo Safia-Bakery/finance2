@@ -15,8 +15,8 @@ class UserService:
         if is_client is not None:
             result = result.filter(Users.is_client ==is_client)
         return result.all()
-    def create_user(self,username,password,phone_number,full_name,status,role_id,tg_id):
-        query = Users(username=username,password=password,phone_number=phone_number,full_name=full_name,status=status,role_id=role_id,tg_id=tg_id)
+    def create_user(self,username,password,phone_number,full_name,status,role_id,tg_id,show):
+        query = Users(username=username,password=password,phone_number=phone_number,full_name=full_name,status=status,role_id=role_id,tg_id=tg_id,show=show)
         self.db.add(query)
         self.db.commit()
         self.db.refresh(query)
@@ -52,6 +52,8 @@ class UserService:
                 query.status=form_data.status
             if form_data.role_id is not None:
                 query.role_id = form_data.role_id
+            if form_data.show is not None:
+                query.show =form_data.show
             self.db.commit()
             self.db.refresh(query)
             return query
