@@ -170,7 +170,7 @@ def order_filter(db:Session,purchaser,id,title,price,payment_type,supplier,spher
         query = query.filter(models.Orders.purchaser.ilike(f"%{purchaser}%"))
     if is_urgent is not None:
         query = query.filter(models.Orders.is_urgent == is_urgent)
-    return query.all()
+    return query.order_by(models.Orders.id.desc()).all()
     
 
 def get_sphere_user(db:Session,sphere_id,order_id):
